@@ -3,7 +3,6 @@ let id = 101
 
 module.exports = {
   getUsers: (req, res) => {
-    console.log("hit get users")
     const { age, email, favorites } = req.query
     if (age) {
       const data = userData.filter(u => u.age < +age)
@@ -20,7 +19,6 @@ module.exports = {
     return res.status(200).send(userData)
   },
   getUser: (req, res) => {
-    console.log("hit get user")
     const { userId } = req.params
     const user = userData.find(u => +u.id === +userId)
     if (!user) {
@@ -29,57 +27,29 @@ module.exports = {
     return res.status(200).send(user)
   },
   getAdmins: (req, res) => {
-    console.log("hit get admins")
     const admins = userData.filter(u => u.type === "admin")
     return res.status(200).send(admins)
   },
   getNonAdmins: (req, res) => {
-    console.log("hit get non admins")
     const nonAdmins = userData.filter(u => u.type !== "admin")
     return res.status(200).send(nonAdmins)
   },
   getUserTypes: (req, res) => {
-    console.log("hit get user types")
     const { userType } = req.params
     const matchingUsers = userData.filter(u => u.type === userType)
     return res.status(200).send(matchingUsers)
   },
   editUser: (req, res) => {
     const { userId } = req.params
-    const {
-      first_name,
-      last_name,
-      email,
-      gender,
-      language,
-      age,
-      city,
-      state,
-      type,
-      favorites
-    } = req.body
     const userIndex = userData.findIndex(u => +u.id === +userId)
-    console.log(userIndex)
-    console.log(userData[userIndex])
     if (userIndex === -1) {
       return res.status(404).send("User not found")
     }
     const newUser = {
       id: +userId,
-      first_name,
-      last_name,
-      email,
-      gender,
-      language,
-      age,
-      city,
-      state,
-      type,
-      favorites
+      ...req.body
     }
-    console.log(newUser)
-    userData.splice(userIndex, 1)
-    userData.push(newUser)
+    userData.splice(userIndex, 1, newUser)
     return res.status(200).send(userData)
   },
   createUser: (req, res) => {
