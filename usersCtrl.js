@@ -60,11 +60,12 @@ module.exports = {
     } = req.body
     const userIndex = userData.findIndex(u => +u.id === +userId)
     console.log(userIndex)
+    console.log(userData[userIndex])
     if (userIndex === -1) {
       return res.status(404).send("User not found")
     }
     const newUser = {
-      userId,
+      id: +userId,
       first_name,
       last_name,
       email,
@@ -77,7 +78,8 @@ module.exports = {
       favorites
     }
     console.log(newUser)
-    userData.splice(userIndex, 1, newUser)
+    userData.splice(userIndex, 1)
+    userData.push(newUser)
     return res.status(200).send(userData)
   },
   createUser: (req, res) => {
